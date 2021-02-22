@@ -1,3 +1,2 @@
-# my-bp
-Boilerplate for webpack
 # tp-bp
+Boilerplate for webpack in typescript
