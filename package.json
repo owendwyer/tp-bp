@@ -1,0 +1,44 @@
+{
+  "name": "ts-bp",
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.dev.config.js",
+    "cold": "webpack-dev-server --no-inline --no-hot --config webpack.dev.config.js",
+    "build": "webpack --mode development --config webpack.config.js",
+    "buildLegacy": "webpack --mode development --config webpack.legacy.config.js",
+    "production": "npm version patch && webpack --mode production --config webpack.config.js",
+    "productionLegacy": "npm version patch && webpack --mode production --config webpack.legacy.config.js",
+    "netlify": "webpack --mode production --config webpack.config.js",
+    "combine": "gulp combine"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/howler": "^2.2.1",
+    "@types/pixi.js": "^4.8.8",
+    "@types/webfontloader": "^1.6.32",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.6.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.5",
+    "gsap": "^3.6.0",
+    "html-webpack-plugin": "^4.3.0",
+    "pixi.js": "^5.3.7",
+    "prettier": "2.0.5",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.1.5",
+    "webfontloader": "^1.6.28",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "howler": "^2.2.1"
+  }
+}

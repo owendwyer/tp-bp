@@ -1,0 +1,33 @@
+
+add this to rules in webpack.config to have babel work
+
+rules: [
+  {
+    test: /\.m?js$/,
+    exclude: /(node_modules|bower_components)/,
+    use: {
+      loader: 'babel-loader'
+    }
+  }
+],
+
+babelrc.json was changed from this - the corejs bit was causing an error
+
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "edge": "17",
+          "firefox": "60",
+          "chrome": "67",
+          "safari": "11.1",
+    	  "ie": "11"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3.6.4",
+      }
+    ]
+  ]
+}
