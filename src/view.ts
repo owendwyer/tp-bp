@@ -6,6 +6,7 @@ import { getHashObj, hashObjType } from './general/hashchecker';
 import { DisplayVars } from './display';
 import AbstractView from './abstractview';
 import TitleView from './titleview';
+import EndView from './endview';
 import {TextureMap} from './preloader';
 
 class View extends PIXI.Container {
@@ -16,6 +17,7 @@ class View extends PIXI.Container {
 	private currentView:AbstractView;
 	private nextView:AbstractView;
 	private titleView:TitleView;
+	private endView:EndView;
 
 	constructor(res:TextureMap, dVars:DisplayVars) {
 		super();
@@ -33,6 +35,7 @@ class View extends PIXI.Container {
 		this.currentView = new AbstractView();
 		this.nextView = new AbstractView();
 		this.titleView = new TitleView(res, dVars);
+		this.endView = new EndView(res, dVars);
 
 		this.setupDisplay(dVars);
 		this.addLists();
@@ -42,7 +45,7 @@ class View extends PIXI.Container {
 		if (dVars.orient === 0) {
 			this.audioPlayer.position.set(763, 37);
 		} else {
-			this.audioPlayer.position.set(513, 763);
+			this.audioPlayer.position.set(513, 37);
 		}
 	}
 
@@ -52,10 +55,14 @@ class View extends PIXI.Container {
 			this.setupDisplay(dVars);
 			this.background.displayChange(dVars);
 			this.titleView.displayChange(dVars);
+			this.endView.displayChange(dVars);
 		}
 	}
 
 	fontsLoaded() {
+		//check want to do it like this
+		this.titleView.fontsLoaded();
+		this.endView.fontsLoaded();
 	}
 
 	init(){

@@ -3,12 +3,12 @@ import AbstractView from './abstractview';
 import { DisplayVars} from './display';
 import {TextureMap} from './preloader';
 
-class TitleView extends AbstractView {
+class EndView extends AbstractView {
 	private tmpText:PIXI.Text;
 
 	constructor(res:TextureMap, dVars:DisplayVars) {
 		super();
-		this.tmpText=new PIXI.Text('Fonts loaded first',{
+		this.tmpText=new PIXI.Text('EndView 1',{
 			fontFamily:'Alegreya Sans, Arial',
 			fontWeight: 'bold',
 			fontSize:25,
@@ -35,7 +35,7 @@ class TitleView extends AbstractView {
 	}
 
 	fontsLoaded(){
-		this.tmpText.text='Fonts loaded second';
+		this.tmpText.text='EndView';
 	}
 
 	init() {
@@ -45,4 +45,4 @@ class TitleView extends AbstractView {
 	}
 }
 
-export default TitleView;
+export default EndView;
