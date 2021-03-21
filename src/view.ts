@@ -106,12 +106,12 @@ class View extends PIXI.Container {
 	audioContextCheck() {
 		this.audioPlayer.checkSuspended();
 		this.interactive = false;
-		this.off('pointerup');
+		this.off('pointertap');
 	}
 
 	addLists() {
 		this.interactive = true;
-		this.on('pointerup', this.audioContextCheck);
+		this.on('pointertap', this.audioContextCheck);
 	}
 }
 

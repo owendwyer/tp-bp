@@ -117,7 +117,7 @@ class AudioPlayer extends PIXI.Container {
 		this.audioBut.buttonMode = true;
 		this.playAudioBut.interactive = true;
 		this.playAudioBut.buttonMode = true;
-		this.audioBut.on('pointerup', this.toggleAudio);
+		this.audioBut.on('pointertap', this.toggleAudio);
 
 		this.loadingText.visible = false;
 
