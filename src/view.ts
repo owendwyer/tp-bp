@@ -23,6 +23,7 @@ class View extends PIXI.Container {
 		super();
 
 		this.audioContextCheck = this.audioContextCheck.bind(this);
+		this.addNextView = this.addNextView.bind(this);
 
 		this.hashObj = getHashObj();
 		this.background = new Background(res, dVars);
