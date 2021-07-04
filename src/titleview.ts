@@ -7,7 +7,7 @@ class TitleView extends AbstractView {
 
 	constructor(res:TextureMap, dVars:DisplayVars) {
 		super();
-		this.tmpText=new PIXI.Text('Fonts loaded first',{
+		this.tmpText=new PIXI.Text('working',{
 			fontFamily:'Alegreya Sans, Arial',
 			fontWeight: 'bold',
 			fontSize:25,
