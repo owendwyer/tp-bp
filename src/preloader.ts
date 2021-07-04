@@ -10,7 +10,7 @@ export interface BuildModeType{
 
 declare const OPD_ENV:string;
 
-const RES_URL:BuildModeType = {
+export const RES_URL:BuildModeType = {
 	dev: './res/',
 	// prod: 'https://www.gamestolearnenglish.com/games/[dirhere]/res/'
 	prod: './res/'

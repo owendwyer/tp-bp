@@ -60,24 +60,16 @@ class View extends PIXI.Container {
 	}
 
 	init(){
-		this.showFirstView(this.titleView);
+		this.showTitle();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
 	//views
-	showFirstView(view:AbstractView) {
-		//task stuff
-		this.currentView = view;
-		this.addChild(this.currentView);
-		this.currentView.alpha = 0;
-		this.fadeTween = gsap.to(this.currentView, { duration: 0.4, delay: 0.3, alpha: 1 });
-		this.currentView.init();
-	}
 
 	showTitle() {
 		this.audioPlayer.show();
-		// this.nextView = this.titleView;
-		// this.showNextView();
+		this.nextView = this.titleView;
+		this.showNextView();
 		this.emit('setdisplaylock', false);//for when coming from endview
 		this.emit('settouchscroll', true);//for when coming from gameview
 	}

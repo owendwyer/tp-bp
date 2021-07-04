@@ -2,43 +2,32 @@ import PIXI from 'pixi.js';
 import { Howl, Howler } from 'howler';
 import {BuildModeType} from '../preloader';
 import { TextureMap } from '../types';
-
-const NUM_SETS = 10;
+// import { getAudioSprite } from '../contentview/audioframes';
 
 const RES_URL:BuildModeType = {
 	dev: './res/audio/',
-	prod: 'https://www.gamestolearnenglish.com/games/questions/res/audio/'
+	prod: './res/audio/'
+	// prod: 'https://www.gamestolearnenglish.com/games/questions/res/audio/'
 };
 declare const OPD_ENV:string;
 
 interface audioSpriteType{
+	// [name: string] : number[];
 	[name: string] : [number, number];
 }
-
-const aFrames:number[][] = [];
-aFrames[0] = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2, 1.5, 2, 2, 1.5, 1.5, 2.5];
-aFrames[1] = [1.5, 2, 2, 1.5, 1.5, 1.5, 1.5, 1.5, 2, 2, 1.5, 2, 2, 1.5, 1.5, 1.5];
-aFrames[2] = [1.5, 1.5, 1.5, 2, 1.5, 1, 2, 2, 1.5, 3.5, 2, 1.5, 2, 2, 1.5, 1.5];
-aFrames[3] = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2, 1.5, 2, 2, 1.5];
-aFrames[4] = [1.5, 2, 1, 2, 1.5, 1.5, 1.5, 1.5, 2, 2, 2, 2, 2, 2, 2, 1.5];
-aFrames[5] = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 4, 2, 1.5, 2, 1.5];
-aFrames[6] = [2, 2, 1.5, 1.5, 1.5, 1.5, 1.5, 1, 2, 1, 1.5, 2, 1.5, 1.5, 2.5, 2];
-aFrames[7] = [1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2, 2, 2, 1.5, 2.5, 1.5, 1.5, 2];
-aFrames[8] = [2, 1.5, 1.5, 1, 2, 1.5, 1.5, 1.5, 1.5, 1.5, 2, 2, 1.5, 1.5, 2, 2];
-aFrames[9] = [1, 1.5, 1, 1.5, 1, 2, 1.5, 1.5, 2, 2, 1.5, 3, 2, 2, 1.5, 4];
 
 const AUD_ICON_FRAME:string='audioIcon.png';
 const AUDBLACK_ICON_FRAME:string='audioIconBlack.png';
 
 class AudioPlayer extends PIXI.Container {
 
-	private showPlayAudioBut:boolean;
-	private isAudioOn:boolean;
-	private curGameInd:number;
+	private showPlayAudioBut:boolean=true;
+	private isAudioOn:boolean=true;
+	private isAudioLoaded:boolean=false;
+	private isAudioLoading:boolean=false;
 
-	private retryCounts:number[];
-	private myAudios:Howl[] | null[];
-	private isAudioLoaded:boolean[];
+	private retryCount:number=3;
+	private myAudio:Howl|null;
 
 	private audioBut : PIXI.Container;
 	private audioBack : PIXI.Graphics;
@@ -50,23 +39,15 @@ class AudioPlayer extends PIXI.Container {
 	private disabledCross : PIXI.Graphics;
 	private loadingText : PIXI.Text
 
+	private isUserAudio:boolean=false;
+	private userAudio:(Howl|null)[]=[];
+
 	constructor(res:TextureMap) {
 		super();
-		this.showPlayAudioBut = true;
-		this.isAudioOn = true;
-		this.curGameInd = 0;
 
-		this.retryCounts = [];
-		this.myAudios = [];
-		this.isAudioLoaded = [];
+		this.myAudio = null;
 
 		this.toggleAudio = this.toggleAudio.bind(this);
-
-		for (let i = 0; i < NUM_SETS; i++) {
-			this.isAudioLoaded[i] = false;
-			this.retryCounts[i] = 3;
-			this.myAudios[i] = null;
-		}
 
 		let wid = 48;
 		let fill = 0xcc3300;
@@ -124,77 +105,72 @@ class AudioPlayer extends PIXI.Container {
 		this.addChild(this.audioBut, this.playAudioBut, this.loadingText, this.disabledCross);
 	}
 
-	playAudio(ind:number, t:string) {
-		this.stopAudio(this.curGameInd);
+	playAudio(ind:number):void{
+		this.stopAudio();
 		if (this.isAudioOn) {
-			if (this.isAudioLoaded[this.curGameInd]) {
-				let myInd = t === 'q' ? ind : ind + 8;
-				let snd = 's_' + myInd;
-				this.myAudios[this.curGameInd]?.play(snd);
+			if (this.isAudioLoaded) {
+				let snd = 's_' + ind;
+				if(!this.isUserAudio){
+					this.myAudio?.play(snd);
+				}else{
+					this.userAudio[ind]?.play();
+				}
 			}
 		}
 	}
 
-	stopAudio(ind:number) {
-		this.myAudios[ind]?.stop();
+	stopAudio():void{
+		this.myAudio?.stop();
 	}
 
-	toggleAudio() {
+	toggleAudio():void{
 		if (this.isAudioOn) {
 			this.isAudioOn = false;
-			this.disabledCross.alpha = 1;
-			this.audioIcon.alpha = 0.5;
 		} else {
 			this.isAudioOn = true;
-			this.audioIcon.alpha = 1;
-			this.disabledCross.alpha = 0;
 		}
-		this.stopAudio(this.curGameInd);
+		this.updateDisplay();
+		this.stopAudio();
 		this.emit('audiostateupdated', this.isAudioOn);
 	}
 
-	updateAudioState(state:boolean) {
-		this.isAudioOn = !state;
-		this.toggleAudio();
+	updateDisplay():void{
+		if (this.isAudioOn) {
+			this.audioIcon.alpha = 1;
+			this.disabledCross.alpha = 0;
+		} else {
+			this.disabledCross.alpha = 1;
+			this.audioIcon.alpha = 0.5;
+		}
 	}
 
-	show() {
+	show():void{
 		this.visible = true;
 	}
 
-	hide() {
+	hide():void{
 		this.visible = false;
 	}
 
-	showPlayBut() {
+	showPlayBut():void{
 		this.showPlayAudioBut = true;
 		this.playAudioBut.visible = true;
 	}
 
-	hidePlayBut() {
+	hidePlayBut():void{
 		this.showPlayAudioBut = false;
 		this.playAudioBut.visible = false;
 	}
 
-	setGameInd(ind:number) {
-		this.curGameInd = ind;
-		this.checkLoaded();
-
-		//this is just a backup check for the audio load
-		//audio is loaded from a call in view
-		//this will normally do nothing as either audioLoaded[ind] will be true or myAudios[ind] will be non null
-		this.loadAudio(this.curGameInd);
-	}
-
-	checkLoaded() {
-		if (this.isAudioLoaded[this.curGameInd]) {
+	checkLoaded():void{
+		if (this.isAudioLoaded) {
 			this.unshowLoading();
 		} else {
 			this.showLoading();
 		}
 	}
 
-	showLoading() {
+	showLoading():void{
 		this.audioBut.visible = false;
 		this.playAudioBut.visible = false;
 		this.loadingText.visible = true;
@@ -202,49 +178,66 @@ class AudioPlayer extends PIXI.Container {
 		this.checkFailed();
 	}
 
-	unshowLoading() {
+	unshowLoading():void{
 		this.audioBut.visible = true;
 		if (this.showPlayAudioBut) this.playAudioBut.visible = true;
 		this.loadingText.visible = false;
 	}
 
-	checkFailed() {
+	checkFailed():void{
 		//
 	}
 
-	checkAudioOn() {
+	getAudioStatus():boolean{
 		return this.isAudioOn;
 	}
 
-	checkSuspended() {
+	setAudioStatus(status:boolean):void{
+		this.isAudioOn=status;
+		this.updateDisplay();
+	}
+
+	checkSuspended():void{
 		if ('ctx' in Howler && Howler.ctx !== null) {
 			Howler.ctx.resume();
 		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
-	//loading
-
-	loadAudio(ind:number) {
-		if (!this.isAudioLoaded[ind] && this.myAudios[ind] === null) {
-			this.tryLoad(ind);
-		}
+	//user
+	setIsUserContent(isUserAudio:boolean):void{
+		this.isUserAudio=isUserAudio;
 	}
 
-	tryLoad(ind:number) {
-		this.unsetAudio(ind);
-		let audPath = RES_URL[OPD_ENV] + 'aud_' + ind;
-		let mySprite:audioSpriteType = this.getSprite(ind);
-		this.myAudios[ind] = new Howl({
+	setUserContent(userAudio:(Howl|null)[]):void{
+		this.userAudio=userAudio;
+		this.isAudioLoaded=true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//loading
+
+	loadAudio(ind:number):void{
+		this.isAudioLoaded=false;
+		if(this.isAudioLoading)this.stopCurrentLoad();
+		this.isAudioLoading=true;
+		this.tryLoad(ind);
+	}
+
+	tryLoad(ind:number):void{
+		this.unsetAudio();
+		let audPath = RES_URL[OPD_ENV] + 's_' + ind;
+		// let mySprite:audioSpriteType = getAudioSprite(ind);
+		this.myAudio = new Howl({
 			src: [audPath + '.ogg', audPath + '.mp3'],
-			sprite: mySprite,
+			// sprite: mySprite,
 			onload: () => {
-				this.audioLoaded(ind);
+				this.audioLoaded();
 			},
 			onloaderror: () => {
-				this.retryCounts[ind] -= 1;
-				if (this.retryCounts[ind] < 1) {
-					this.audioFailed(ind);
+				this.retryCount -= 1;
+				if (this.retryCount < 1) {
+					this.audioFailed();
 				} else {
 					this.tryLoad(ind);
 				}
@@ -252,36 +245,32 @@ class AudioPlayer extends PIXI.Container {
 		});
 	}
 
-	audioLoaded(ind:number) {
-		this.myAudios[ind]?.off('load');
-		this.myAudios[ind]?.off('loaderror');
-		this.isAudioLoaded[ind] = true;
+	audioLoaded():void{
+		this.myAudio?.off('load');
+		this.myAudio?.off('loaderror');
+		this.isAudioLoaded = true;
+		this.isAudioLoading=false;
 		this.checkLoaded();
 	}
 
-	audioFailed(ind:number) {
-		this.unsetAudio(ind);
+	audioFailed():void{
+		this.isAudioLoading=false;
+		this.unsetAudio();
 		this.loadingText.text = '';
 	}
 
-	unsetAudio(ind:number) {
-		this.myAudios[ind]?.off('load');
-		this.myAudios[ind]?.off('loaderror');
-		this.myAudios[ind]?.unload();
-		this.myAudios[ind] = null;
+	unsetAudio():void{
+		this.myAudio?.off('load');
+		this.myAudio?.off('loaderror');
+		this.myAudio?.unload();
+		//here need to add a myAudio.delete or whatever howl does - unload is probably way to do this but check the docs
+		// this.myAudio = null;
 	}
 
-	getSprite(ind:number) {
-		let cum = 0;
-		let myFrames = aFrames[ind];
-		let mySprite={} as audioSpriteType;
-		for (let i = 0; i < myFrames.length; i++) {
-			let myLen = myFrames[i] * 1000;
-			let spriteRef:string='s_' + i;
-			mySprite[spriteRef] = [cum, myLen];
-			cum += myLen;
-		}
-		return mySprite;
+	stopCurrentLoad():void{
+		//need to check this
+		this.unsetAudio();
+		this.isAudioLoading=false;
 	}
 }
 
