@@ -2,8 +2,8 @@
 import Preloader from './preloader';
 import FontsLoader from './fontsloader';
 import View from './view';
-import {Display, DisplayVars} from './display';
-import {TextureMap} from './preloader';
+import { DisplayVars, TextureMap } from './types';
+import {Display} from './display';
 
 class Main {
 	private display:Display;
@@ -24,7 +24,6 @@ class Main {
 	}
 
 	fontsLoaded() {
-		this.view.fontsLoaded();
 	}
 
 	init(){

@@ -1,7 +1,6 @@
 import PIXI from 'pixi.js';
 import AbstractView from './abstractview';
-import { DisplayVars} from './display';
-import {TextureMap} from './preloader';
+import { DisplayVars, TextureMap } from './types';
 
 class TitleView extends AbstractView {
 	private tmpText:PIXI.Text;
@@ -32,10 +31,6 @@ class TitleView extends AbstractView {
 
 	displayChange(dVars:DisplayVars){
 		this.setupDisplay(dVars);
-	}
-
-	fontsLoaded(){
-		this.tmpText.text='Fonts loaded second';
 	}
 
 	init() {

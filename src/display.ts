@@ -1,5 +1,6 @@
 import PIXI from 'pixi.js';
 import View from './view';
+import {DisplayVars} from './types';
 
 const DEF_WIDTH = 800;
 const DEF_HEIGHT = 550;
@@ -7,12 +8,6 @@ const DEF_HEIGHT = 550;
 const Y_MARGIN_LAND = 60;
 const Y_MARGIN_PORT = 20;
 const CANVAS_ID = 'myCanvas';//this is needed for highscorenentryinputs
-
-export interface DisplayVars{
-	scale:number;
-	orient: number;
-	textRes: number;
-}
 
 export class Display {
 	private displayChange:Function;
@@ -51,7 +46,7 @@ export class Display {
 		this.addResizeListener();
 	}
 
-	getRenderer() {
+		getRenderer():PIXI.Renderer|PIXI.CanvasRenderer{
 		let rendererOptions = {
 			width: DEF_WIDTH,
 			height: DEF_HEIGHT,
@@ -128,7 +123,7 @@ export class Display {
 		}
 	}
 
-	getDisplayVars() {
+	getDisplayVars():DisplayVars{
 		return { scale: this.scale, orient: this.orient, textRes: this.textRes };
 	}
 

@@ -21,10 +21,10 @@ class FontsLoader {
 			google: {
 				families: ["Alegreya+Sans:wght@700", "ABeeZee"]
 			},
-			active: () => {
-				this.areFontsLoaded = true;
-				if(this.callBack!==undefined)this.callBack();
-			}
+			// active: () => {
+			// 	this.areFontsLoaded = true;
+			// 	if(this.callBack!==undefined)this.callBack();
+			// }
 		});
 	}
 }

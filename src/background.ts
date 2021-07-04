@@ -1,6 +1,5 @@
 import PIXI from 'pixi.js';
-import { DisplayVars} from './display';
-import {TextureMap} from './preloader';
+import { DisplayVars, TextureMap } from './types';
 
 class Background extends PIXI.Container {
 

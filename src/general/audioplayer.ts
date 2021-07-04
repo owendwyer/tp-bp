@@ -1,7 +1,7 @@
 import PIXI from 'pixi.js';
 import { Howl, Howler } from 'howler';
 import {BuildModeType} from '../preloader';
-import {TextureMap} from '../preloader';
+import { TextureMap } from '../types';
 
 const NUM_SETS = 10;
 

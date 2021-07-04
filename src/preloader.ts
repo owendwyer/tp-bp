@@ -1,14 +1,11 @@
 /// <reference path="opdPreloader.d.ts"/>
 import * as opdPreloader from 'opdPreloader';
 import PIXI from 'pixi.js';
+import {TextureMap} from './types';
 import mySpriteData from './jsons/mySprite.json';
 
 export interface BuildModeType{
 	[name: string] : string;
-}
-
-export interface TextureMap{
-	[name: string] : PIXI.Texture;
 }
 
 declare const OPD_ENV:string;
@@ -38,7 +35,6 @@ class Preloader {
 	startLoad() {
 		let myPath:string = RES_URL[OPD_ENV] + MAIN_SPRITE_PATH;
 		this.loader.add('main', myPath);
-		this.loader.add('dum', './res/mySprite.8.0.png');
 		this.onErrorId=this.loader.onError.add(this.gotError);
 		this.onCompleteId=this.loader.onComplete.add(this.loaded);
 		this.loader.load();

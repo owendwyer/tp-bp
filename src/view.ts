@@ -3,11 +3,10 @@ import gsap from 'gsap';
 import Background from './background';
 import AudioPlayer from './general/audioplayer';
 import { getHashObj, hashObjType } from './general/hashchecker';
-import { DisplayVars } from './display';
+import { DisplayVars, TextureMap } from './types';
 import AbstractView from './abstractview';
 import TitleView from './titleview';
 import EndView from './endview';
-import {TextureMap} from './preloader';
 
 class View extends PIXI.Container {
 	private background:Background;
@@ -58,12 +57,6 @@ class View extends PIXI.Container {
 			this.titleView.displayChange(dVars);
 			this.endView.displayChange(dVars);
 		}
-	}
-
-	fontsLoaded() {
-		//check want to do it like this
-		this.titleView.fontsLoaded();
-		this.endView.fontsLoaded();
 	}
 
 	init(){
